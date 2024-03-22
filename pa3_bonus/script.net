@@ -1,0 +1,38 @@
+using MySql.Data.MySqlClient;
+using System;
+namespace testerSql
+{
+    internal class Program
+    {
+        public static void Main(string[] args)
+        {
+            string connectionString = "server=localhost;user=root;database=test;port=3306;password=password";
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                // select query testing
+                string querry = "SELECT name FROM author";
+                MySqlCommand command = new MySqlCommand(querry, connection);
+                using (MySqlDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
+                        Console.WriteLine(reader.GetString("name"));
+                
+                // test value insertion
+                querry = "INSERT INTO books VALUES (Null,'testBookName', 'testISBn', 1, 2012, 100, 3)";
+                command = new MySqlCommand(querry, connection);
+                command.ExecuteNonQuery();
+                
+                // update the test value
+                querry = "UPDATE books b\nSET b.name = 'test updated name'\nWHERE (b.name LIKE '%testbookname%');";
+                command = new MySqlCommand(querry, connection);
+                command.ExecuteNonQuery();
+                
+                // deletion of a test insertion
+                querry = "DELETE FROM BOOKS \nWHERE name LIKE '%name%';";
+                command = new MySqlCommand(querry, connection);
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+    }
+}
