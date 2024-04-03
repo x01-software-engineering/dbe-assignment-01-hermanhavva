@@ -1,34 +1,29 @@
 SET AUTOCOMMIT = ON;
 
-CREATE PROCEDURE SelectBySubstringInName(IN name VARCHAR(64))
+CREATE PROCEDURE select_by_substring_in_name_sproc(IN name VARCHAR(64))
 BEGIN 
 SET name = CONCAT('%', name, '%');
 SELECT b.id, b.name, b.year_date, b.dollar_price FROM books b 
 WHERE b.name LIKE name;
 END;
-drop procedure UpdateBookNameById;
+drop procedure select_by_substring_in_name_sproc;
 
-CREATE PROCEDURE UpdateBookNameById (IN id_to_update INTEGER, IN new_name VARCHAR(64))
-BEGIN 
-    UPDATE books b 
-    SET b.name = new_name
-    WHERE b.id = id_to_update;
-END;
 
-CREATE PROCEDURE GetBookNameById(IN book_id INTEGER, OUT name_to_get VARCHAR(64))
+CREATE PROCEDURE get_book_name_by_id_sproc(IN book_id INTEGER, OUT name_to_get VARCHAR(64))
 BEGIN 
     SELECT b.name INTO name_to_get FROM books b 
     WHERE b.id = book_id;
 END;
-drop procedure GetBookNameById;
+drop procedure get_book_name_by_id_sproc;
 
-CREATE PROCEDURE GetIncrement(INOUT number INTEGER)
+-- example of a procedure with inout parameter
+CREATE PROCEDURE get_increment(INOUT number INTEGER)
 BEGIN 
     SET number = number + 1;
 END;
 
 
-CREATE PROCEDURE AddLoan (IN loan_customer_id INTEGER, IN loan_book_id INTEGER, IN loan_time_frame INTEGER)
+CREATE PROCEDURE add_loan_sproc (IN loan_customer_id INTEGER, IN loan_book_id INTEGER, IN loan_time_frame INTEGER)
 BEGIN
     START TRANSACTION;
     IF EXISTS(SELECT 1 FROM customer c WHERE c.id = loan_customer_id) AND
@@ -50,7 +45,35 @@ BEGIN
         ROLLBACK;
     END IF;
 END;
+drop procedure add_loan_sproc;
+
+CREATE PROCEDURE get_customer_id_by_name_and_address_sproc(IN customer_name VARCHAR(255), IN customer_address VARCHAR(255), OUT customer_id INTEGER)
+BEGIN
+    IF EXISTS(SELECT 1 FROM customer c WHERE c.name = customer_name AND c.address = customer_address) THEN
+        SET customer_id =  (SELECT id FROM customer c
+        WHERE c.name = customer_name AND c.address = customer_address);
+    ELSE 
+        SELECT 'Customer not found';
+    end if;
+END;
+DROP PROCEDURE get_customer_id_by_name_and_address_sproc;
+
+CREATE PROCEDURE close_loan_sproc(IN loan_id INTEGER, IN loan_book_id INTEGER)
+BEGIN
     
-drop procedure AddLoan;
-
-
+    START TRANSACTION;
+    
+    IF (SELECT l.return_date FROM loan l WHERE l.id = loan_id) IS NULL AND 
+       (SELECT b2l.book_id FROM book2loan b2l WHERE b2l.loan_id = loan_id) = loan_book_id THEN
+        
+        UPDATE loan l SET l.return_date = CURDATE() WHERE l.id = loan_id; 
+        UPDATE number_books_available nba SET nba.amount_available = (nba.amount_available + 1) 
+        WHERE nba.book_id = loan_book_id;
+        COMMIT;
+        SELECT 'loan closed successfully';
+    ELSE 
+        ROLLBACK;
+        SELECT 'transaction failed (wrong loan_id or book_id)';
+    END IF;
+END;
+drop procedure close_loan_sproc;
