@@ -1,30 +1,45 @@
-# Library Management System Database
+# MySQL Library Management System Database
 
 This MySQL database is designed to manage a library's collection of books, loans, customers, and the relationships between them. It also includes stored procedures for common database operations and a folder for connecting the database to a .NET application.
 
 ## Tables
 
-1. **books**: Contains information about each book in the library, such as title, author, genre, and availability.
+1. **author**: Contains information about authors: name, date of birth, nationality, biography. Primary key is ID.
+  
+3. **books**: Contains information about each book in the library, such as title, ISBN, edition, year of publishing, price. Primary key is ID.
 
-2. **loans**: Tracks loans made to customers, including the book ID, customer ID, loan date, and return date.
+4. **loans**: Tracks loans made to customers, including loan date, due date, return date. Primary key is ID. 
 
-3. **book2loan**: Represents the many-to-many relationship between books and loans, linking each book to its loan record.
+5. **genre**: Contains info about each customer: home address, name, phone, email, password hash and salt. Primary key is ID.
 
-4. **book2genre**: Maps books to their respective genres.
+6. **book2loan**: Represents the many-to-many relationship between books and loans, linking each Book ID to its Loan ID.
+   Foreign Key constraint: Book ID refers the ID column in books table;
+   Foreign Key constraint: Loan ID refers the ID column in loan table;
 
-5. **book2author**: Maps books to their respective authors.
+8. **book2genre**: Represents the many-to-many relationship between books and genres. Book ID to Genre ID.
+   Foreign Key constraint: book ID refers the ID column in books table;
+   Foreign Key constraint: genre ID references ID column in genre table;
 
-6. **customers**: Stores information about library customers, including their name, contact information, and any fines they may have.
+10. **book2author**: Represents the many-to-many relationship between books and authors. Book ID to Author ID.
+    Foreign Key constraint: book ID references the ID column in books table;
+    Foreign Key constraint: author ID references the ID column in author table;
+
+12. **customers**: Stores information about library customers, including customer ID, loan date, due date, return date. Primary key is ID.
+
+13. **number_books_availablle**: Stores the information on how many books are avaolable at the moment. Book ID - positive INT value or zero.
+    Foreign Key constraint: book ID references the ID column of books table.
 
 ## Files
 
-1. `queries.sql`: Contains a collection of SQL queries for performing various operations on the database, such as adding a new book or updating a customer's information.
+1. FOLDER `db_creation_insertion_queries`: has three .sql files which enable tables creation and insertions to those tables as well as possible querries. 
 
-2. `st_procedures.sql`: Includes stored procedures for common database tasks, such as checking out a book or calculating fines for overdue books.
+2. FOLDER `pa4`: Contains two .sql files.
+   `pa4_procedures.sql` stores routines/procedures which might be useful to add a new loan or closing the loan(meaning the customer brought back the book).
+   `pa4_executions.sql` stores example of executions of those st. proc. 
 
-3. `executions.sql`: Provides examples of how to execute the stored procedures in `st_procedures.sql`.
+5. FOLDER `pa_3_bonus`: has logic to connect the database to a .NET application, allowing for easy integration into a library management system software.
 
-4. `pa_3_bonus`: Folder containing logic to connect the database to a .NET application, allowing for easy integration into a library management system software.
+4. FILE `pa3.sql`: Provides examples of additional querries to database.
 
 ## Purpose
 
