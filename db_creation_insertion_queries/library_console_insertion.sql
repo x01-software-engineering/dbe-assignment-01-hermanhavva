@@ -11,6 +11,26 @@ INSERT INTO books (name, ISBN, edition, year_date, dollar_price,  publisher_id) 
                                                                                     ('Good Omens', '9788831003211', 3, 2017, 80, 5), -- authors are Terry Pratchet and Neil Gaiman 
                                                                                     ('The Guernsey Literary and Potato Peel Pie Society', '97888315032398', 1, 2018, 40, 6); -- authors are Mary Ann Shaffer and Annie Barrows
 
+INSERT number_books_available (book_id, amount_available) VALUES 
+(1,1),
+(2,1),
+(3,0),
+(4,2),
+(5,1),
+(6,1),
+(7,2),
+(8,2),
+(9,1),
+(10,0),
+(11,1);
+CREATE TRIGGER check_positive_integer BEFORE INSERT ON number_books_available
+    FOR EACH ROW
+BEGIN
+    IF NEW.amount_available < 0 THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Book amount must be a positive integer or zero';
+    END IF;
+END;
 INSERT INTO author (name, date_of_birth, nationality, biography) VALUES
                                                                      ('J.K. Rowling', '1965-07-31', 'British', 'Joanne Rowling, better known by her pen name J.K. Rowling, is a British author, philanthropist, film producer, television producer, and screenwriter.'),
                                                                      ('Francis Scott Fitzgerald', '1896-09-24', 'American', 'Francis Scott Key Fitzgerald was an American novelist, essayist, screenwriter, and short-story writer. He is best known for his novels depicting the flamboyance and excess of the Jazz Age, notably "The Great Gatsby." Fitzgerald is regarded as one of the greatest American writers of the 20th century.'),

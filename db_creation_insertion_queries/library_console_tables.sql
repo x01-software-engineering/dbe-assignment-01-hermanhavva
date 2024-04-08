@@ -11,6 +11,11 @@ CREATE TABLE books (
                        INDEX ISBN_index (ISBN)
 
 );
+CREATE TABLE number_books_available(
+    book_id INTEGER PRIMARY KEY NOT NULL,
+    amount_available INTEGER NOT NULL,
+    FOREIGN KEY(book_id) REFERENCES books(id)      
+);
 -- insert some values into books
 
 CREATE TABLE author (
