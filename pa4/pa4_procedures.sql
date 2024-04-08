@@ -30,13 +30,13 @@ BEGIN
        EXISTS(SELECT 1 FROM books b WHERE b.id = loan_book_id) AND
        (SELECT nba.amount_available FROM number_books_available nba WHERE nba.book_id = loan_book_id) > 0 THEN
     
-    INSERT INTO loan(customer_id, loan_date, due_date, return_date) VALUES 
-    (loan_customer_id, CURDATE(), ADDDATE(CURDATE(), INTERVAL loan_time_frame MONTH), null);
-    INSERT INTO book2loan(book_id, loan_id) VALUES (loan_book_id, (SELECT MAX(id) AS max_id FROM loan));
-    UPDATE number_books_available nba SET amount_available = amount_available - 1 
-    WHERE nba.book_id = loan_book_id;
-    SELECT 'executed successfully';
-    COMMIT;
+        INSERT INTO loan(customer_id, loan_date, due_date, return_date) VALUES 
+        (loan_customer_id, CURDATE(), ADDDATE(CURDATE(), INTERVAL loan_time_frame MONTH), null);
+        INSERT INTO book2loan(book_id, loan_id) VALUES (loan_book_id, (SELECT MAX(id) AS max_id FROM loan));
+        UPDATE number_books_available nba SET amount_available = amount_available - 1 
+        WHERE nba.book_id = loan_book_id;
+        SELECT 'executed successfully';
+        COMMIT;
     ELSEIF (SELECT nba.amount_available FROM number_books_available nba WHERE nba.book_id = loan_book_id) = 0 THEN
         SELECT 'book is unavailable';
         ROLLBACK;
@@ -45,7 +45,8 @@ BEGIN
         ROLLBACK;
     END IF;
 END;
-drop procedure add_loan_sproc;
+
+-- DROP PROCEDURE add_loan_sproc;
 
 CREATE PROCEDURE get_customer_id_by_name_and_address_sproc(IN customer_name VARCHAR(255), IN customer_address VARCHAR(255), OUT customer_id INTEGER)
 BEGIN
@@ -56,7 +57,7 @@ BEGIN
         SELECT 'Customer not found';
     end if;
 END;
-DROP PROCEDURE get_customer_id_by_name_and_address_sproc;
+-- DROP PROCEDURE get_customer_id_by_name_and_address_sproc;
 
 CREATE PROCEDURE close_loan_sproc(IN loan_id INTEGER, IN loan_book_id INTEGER)
 BEGIN
@@ -76,4 +77,4 @@ BEGIN
         SELECT 'transaction failed (wrong loan_id or book_id)';
     END IF;
 END;
-drop procedure close_loan_sproc;
+-- DROP PROCEDURE close_loan_sproc;
