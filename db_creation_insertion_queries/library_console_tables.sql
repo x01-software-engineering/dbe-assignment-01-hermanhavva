@@ -89,3 +89,9 @@ CREATE TABLE book2loan(
                           FOREIGN KEY (book_id) REFERENCES books(id),
                           PRIMARY KEY (book_id, loan_id)
 );
+
+-- creating indexes for to speed up the view search
+ALTER TABLE books ADD INDEX idx_book_name (name);
+ALTER TABLE publisher ADD INDEX idx_publisher_name (name);
+ALTER TABLE book2author ADD INDEX idx_book_id_b2a (book_id);
+ALTER TABLE book2loan ADD INDEX idx_book_id_b2l (book_id);
