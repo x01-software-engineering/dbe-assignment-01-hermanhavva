@@ -39,7 +39,15 @@ This MySQL database is designed to manage a library's collection of books, loans
 
 5. FOLDER `pa_3_bonus`: has logic to connect the database to a .NET application, allowing for easy integration into a library management system software.
 
+6. FOLDER `pa5`: has one .sql file
+   `views.sql` has a view which outputs info about the books which are currently loaned in the format:
+   title | comma-separated authors | <publisher>, <release year> | date of loan in format Mmm, dd yyyy | number of days to the end term |
+
 4. FILE `pa3.sql`: Provides examples of additional querries to database.
+
+## DataBase Schema
+![schema](schema.png)
+
 
 ## Purpose
 
