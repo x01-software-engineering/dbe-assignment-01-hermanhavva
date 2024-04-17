@@ -54,3 +54,7 @@ This MySQL database is designed to manage a library's collection of books, loans
 
 The primary purpose of this database is to efficiently manage a library's collection of books, loans, and customers. It provides a structured way to store and retrieve information, making it easier for librarians to track book availability, loan history, and customer details.
 
+## Author
+
+This project was created by Herman Havva, first year student at KSE (Kyiv School of Economics), as a part of the course on DataBases.
+
